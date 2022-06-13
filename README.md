@@ -1,2 +1,2 @@
 # MikeCodeur
-My solutions and projects for MikeCodeur's bootcamp (ReactJS)
+My solutions and projects for MikeCodeur's bootcamp (ReactJS).
