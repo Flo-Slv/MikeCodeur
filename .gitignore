@@ -5,3 +5,10 @@ react-prerequis-debutants/build
 react-prerequis-debutants/.idea/
 react-prerequis-debutants/.vscode/
 react-prerequis-debutants/.eslintcache
+react-prerequis-javascript/.DS_Store
+react-prerequis-javascript/node_modules
+react-prerequis-javascript/coverage
+react-prerequis-javascript/build
+react-prerequis-javascript/.idea/
+react-prerequis-javascript/.vscode/
+react-prerequis-javascript/.eslintcache
