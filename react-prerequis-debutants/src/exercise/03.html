@@ -1,0 +1,31 @@
+<!-- JavaScript - variables et types -->
+<!-- http://localhost:3000/alone/exercise/02.html -->
+
+<!-- 🐶 Créé des variables nom, age, ville, rue avec l'inscruction "var"   -->
+<!--   📑 https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/var -->
+
+<!-- 🐶 Ensuite initialise les variables avec leurs valeurs respectives : "John Doe", 21, "New York", 17   -->
+<!--   🤖 var a = "b" -->
+
+<!-- 🐶 Ensuite créé une instruction pour logger dans la console  -->
+<!--   🤖 console.log() -->
+
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>voir la console</h1>
+		<script>
+			//démarre ici
+			var nom = "Flo";
+			var age = 32;
+			var ville = "Mulhouse";
+			var rue = "secret";
+			var label = `${nom}  ${age}  ${ville} ${rue}`;
+			var test = nom.concat(" ", age, " ", ville, " ", rue);
+
+			console.log(`Label: ${label}`);
+			console.log(`test: ${test}`);
+			console.log(`nom: ${typeof nom}`);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!-- JavaScript - Les Evènements   -->
+<!-- http://localhost:3000/alone/exercise/09.html -->
+
+<!DOCTYPE html>
+<html>
+	<body>
+		<div id="root">
+			<h1 id="title">Pas d'information</h1>
+			<!-- 🐶 Créé un bouton avec attribut onclick qui fait appelle à la fonction handleClick()-->
+			<!-- 🤖 <button onclick="handleClick()">Click me</button> -->
+			<button
+				onclick="handleClick()"
+				onmouseover="handleClick()"
+			>
+					Change date
+			</button>
+
+			<div
+				style="background-color: lightblue"
+				onmouseenter="handleClick()"
+			>
+				entre ici
+			</div>
+
+			<div
+				style="background-color: lightcoral"
+				onmouseleave="handleClick()"
+			>
+				entre ici
+			</div>
+
+			<button onclick="document.removeEventListener('keydown', handlePress)">
+				Supprimer event
+			</button>
+		</div>
+
+		<script>
+			// 🐶 Créé une fonction handleClick() et déclare 2 variables date et time
+			// 🤖 var date = new Date().toLocaleDateString() et
+			// var time = new Date().toLocaleTimeString()
+			// 📑 https://www.w3schools.com/jsref/jsref_tolocaledatestring.asp
+			function handleClick() {
+				let date = new Date().toLocaleDateString();
+				let time = new Date().toLocaleTimeString();
+
+				let label = `Nous sommes le: ${date} et il est: ${time}`;
+
+				let title = document.getElementById("title");
+				title.innerHTML = label;
+			}
+			// 🐶 créé ensuite une variable `label` qui sera une concaténation
+			// "Nous sommes le : `date` il est `time`"
+			//
+			// 🐶 mets à jour l'élément h1 avec `label`
+			// utilise document.getElementById et innerText
+
+			// 🚀 La suite est dans la section bonus
+			function handlePress(event) {
+				let name = event.key;
+				let code = event.code;
+
+				console.log(`name: ${name} + code: ${code}`);
+
+				if (code === 'ArrowUp' || code === 'ArrowDown' || code === 'Enter') {
+					handleClick();
+				}
+			}
+
+			document.addEventListener('keydown', handlePress);
+		</script>
+	</body>
+</html>
