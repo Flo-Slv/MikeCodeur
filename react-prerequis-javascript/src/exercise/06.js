@@ -1,8 +1,8 @@
 // Array : Les Méthodes courantes
 // http://localhost:3000/alone/exercise/06.js
 
-import displayText, {init} from './helper/exerciseHelper'
-init('Array : Les Méthodes courantes')
+import displayText, {init} from './helper/exerciseHelper';
+init('Array : Les Méthodes courantes');
 
 const computers = [
   {
@@ -34,29 +34,33 @@ const computers = [
       'ssd-500go',
     ],
   },
-]
+];
 
 // 🐶 Affiche à l'ecran (displayText) :
 // `Mon ordinateur préferé est le MacBook Pro`
 // 🤖 en passant par la méthode find
-
-displayText(`Mon ordinateur préferé est le`)
+let favorite = computers.find(computer => computer.name == "MacBook Pro");
+console.log(favorite);
+displayText(`Mon ordinateur préferé est le ${favorite.name}`);
 
 // 🐶 Code ce qui permet de savoir s'il il y a au moins un ssd-500go
 // 🤖 en passant par la méthode `some`
-
-displayText(`Y a t-il au moins un pc avec un ssd-500go ? :  `)
+let some = computers.some(computer => computer.features.includes('ssd-500go'));
+displayText(`Y a t-il au moins un pc avec un ssd-500go ? :  ${some}`);
 
 // 🐶 Code ce qui permet de savoir s'il il y a que des ssd-500go
 // 🤖 en passant par la méthode `every`
-
-displayText(`Tous les pc ont un ssd-500go ? : `)
+let every = computers.every(computer => computer.features.includes('ssd-500go'));
+displayText(`Tous les pc ont un ssd-500go ? : ${every}`)
 
 // 🐶 Affiche la liste des ids
 // 🤖 en passant par la méthode `map`
-displayText(`Tous les ids `)
+let ids = computers.map(computer => computer.id);
+console.log(ids);
+displayText(`Tous les ids: ${ids.toString()}`)
 
 // 🐶 Récuperer la liste des pc avec une webcam
 // 🤖 en passant par la méthode `filter`
-
-displayText(`Les pc avec webcam : `)
+let res = computers.filter(computer => computer.features.includes('webcam'));
+res = res.map(i => i.name);
+displayText(`Les pc avec webcam : ${res.toString()}`);
