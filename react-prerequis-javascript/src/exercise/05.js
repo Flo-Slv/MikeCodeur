@@ -13,26 +13,31 @@ const personne = {nom: 'mike', adresse}
 // 📑 https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Optional_chaining
 
 const checkCountryCode = personne => {
-  if (
-    personne.adresse.ville.countryCode === personne.adresse.pays.countryCode
-  ) {
-    return true
-  } else {
-    return false
-  }
+	if (
+		personne?.adresse?.ville?.countryCode === personne?.adresse?.pays?.countryCode
+	) {
+		return true
+	} else {
+		return false
+	}
 }
 // 🐶 Utilise une ternaire en une seul ligne à la place de ce if/else
-if (checkCountryCode(personne)) {
-  displayText('le countryCode ville et pays sont identiques ')
-} else {
-  displayText('le countryCode ville et pays sont differents ')
-}
+// if (checkCountryCode(personne)) {
+//   displayText('le countryCode ville et pays sont identiques ')
+// } else {
+//   displayText('le countryCode ville et pays sont differents ')
+// }
+
+checkCountryCode(personne)
+	? displayText('le countryCode ville et pays sont identiques')
+	: displayText('le countryCode ville et pays sont differents');
 
 // 🐶 getPaysOrDefault retourne un Pays si le pays est renseigné,
 // sinon retourne le pays france par default {nom: "France", countryCode : "FR"}
 // utilise le Nullish coalishing
 // 🤖 let nameSafe = name ?? "anonyme"
 const getPaysOrDefault = personne => {
-  return personne.adresse.pays
+	let test = personne.adresse.pays ?? { nom: "France", countryCode: "FR" };
+	return test;
 }
 displayText(`Le pays est ${getPaysOrDefault(personne).nom}`)
