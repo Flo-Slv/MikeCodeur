@@ -2,30 +2,42 @@
 <!-- http://localhost:3000/alone/exercise/04.html -->
 
 <html>
-  <head>
-    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/babel">
-      // 🐶 Fait une fonction 'paragraphe' qui retourne l'element <p> avec le texte
+	<head>
+		<script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
+		<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			// 🐶 Fait une fonction 'paragraphe' qui retourne l'element <p> avec le texte
+			//let paragraphe = ({children}) => {
+			//	return <p>{children}</p>;
+			//};
 
-      // 🐶 Utilise cette fonction à la place des balises <p>
-      // 🤖 {paragraphe({children:'Lorem Ipsum ...'})}
-      const divElement = (
-        <div className="rootContainer">
-          <h1>Bienvenue sur mon site</h1>
-          <p className="paragraphe">Lorem Ipsum is simply dummy text ... </p>
-          <p className="paragraphe">Lorem Ipsum has been the industry ...</p>
-          <p className="paragraphe">
-            when an unknown printer took a galley ...
-          </p>
-        </div>
-      )
+			let Paragraphe = ({ text, author }) => {
+				return <p className="paragraphe">
+					{text}: {author}
+				</p>;
+			}
 
-      ReactDOM.render(divElement, document.getElementById('root'))
-    </script>
-  </body>
+			Paragraphe.propTypes = {
+				text: PropTypes.string.isRequired,
+				author: PropTypes.string.isRequired
+			};
+
+
+			// 🐶 Utilise cette fonction à la place des balises <p>
+			// 🤖 {paragraphe({children:'Lorem Ipsum ...'})}
+			const divElement = (
+				<div className="rootContainer">
+					<h1>Bienvenue sur mon site</h1>
+					<Paragraphe text="test" author="Flo" />
+				</div>
+			);
+
+			ReactDOM.render(divElement, document.getElementById('root'))
+		</script>
+	</body>
 </html>
