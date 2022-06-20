@@ -1,5 +1,5 @@
 // Ajouter du Style CSS
-// http://localhost:3000/alone/exercise/05.js
+// http://localhost:3000/alone/exercise/06.js
 
 import * as React from 'react'
 
@@ -13,13 +13,27 @@ const buttonCreate = <button>Créer</button>
 const buttonUpdate = <button>Modifier</button>
 const buttonDelete = <button>Supprimer</button>
 
+const AdminActions = () => <>
+	{buttonCreate}
+	{buttonUpdate}
+	{buttonDelete}
+</>;
+
+const GuestActions = () => <>
+	{buttonRead}
+</>;
+
+const ButtonActions = ({ isAdmin, hidden }) => {
+	// if (isAdmin) return <AdminActions />
+	// else return <GuestActions />;
+	if (hidden) return null;
+	return isAdmin ? <AdminActions /> : <GuestActions />;
+}
+
 function App() {
   return (
     <div>
-      {buttonRead}
-      {buttonCreate}
-      {buttonUpdate}
-      {buttonDelete}
+	  <ButtonActions isAdmin={Boolean(true)} hidden={Boolean(false)}/>
     </div>
   )
 }
