@@ -2,30 +2,53 @@
 <!-- http://localhost:3000/alone/exercise/02.html -->
 
 <html>
-  <head>
-    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
-    <!-- ⛏️ Ajoute Babel en supprimant les commentaires de la ligne ci-dessous -->
-    <!-- <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script> -->
-  </head>
-  <body>
-    <div id="root"></div>
-    <!-- 🐶 Pour que Babel prenne en compte le code JavaScipt, il faut rajouter un attribut `type="text/babel"`
-    A la balise <script> -->
-    <script>
-      const rootEl = document.getElementById('root')
+	<head>
+		<script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+		<!-- ⛏️ Ajoute Babel en supprimant les commentaires de la ligne ci-dessous -->
+		<script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
 
-      // 🐶 Il va falloir maintenant réimplémenter avec JSX
-      const divEl = document.createElement('div')
-      divEl.textContent = 'Bienvenue sur mon site'
-      divEl.className = 'rootContainer'
+		<script type="text/babel">
+			const rootEl = document.getElementById('root');
+			const div = 'Bienvenue sur mon site !';
+			const className = 'rootContainer';
 
-      // 🐶 Crée une variable divEl qui contient du JSX (une div avec un texte et une class comme
-      // le resultat final html attendu)
-      // 🤖 Attention aux attributs en React qui diffèrent légèrement du HTML ex : class -> className
-      // 📑 https://fr.reactjs.org/docs/dom-elements.html
+			const h1 = <h1>Bienvenue</h1>;
+			const h2 = <h2>Lets do it</h2>;
+			const p = (
+				<p>Lorem ipsum</p>
+			);
+			const children = <>
+				{h1}
+				{h2}
+				{p}
+			</>;
+			const props	= { children, className };
+			const divEl = <div {...props}></div>;
+			// const divEl = <div className={className}>
+			//	{h1}
+			//	{h2}
+			//	{p}
+			//</div>;
+			ReactDOM.render(divEl, rootEl);
 
-      document.getElementById('root').append(divEl)
-    </script>
-  </body>
+			// 🐶 Il va falloir maintenant réimplémenter avec JSX
+			// const divEl = document.createElement('div');
+			// divEl.textContent = 'Bienvenue sur mon site';
+			// divEl.className = 'rootContainer';
+
+			// 🐶 Crée une variable divEl qui contient du JSX (une div avec un texte et une class comme
+			// le resultat final html attendu)
+			// 🤖 Attention aux attributs en React qui diffèrent légèrement du HTML ex : class -> className
+			// 📑 https://fr.reactjs.org/docs/dom-elements.html
+
+			// document.getElementById('root').append(divEl)
+		</script>
+	</head>
+
+	<body>
+		<div id="root"></div>
+		<!-- 🐶 Pour que Babel prenne en compte le code JavaScipt, il faut rajouter un attribut `type="text/babel"`
+		A la balise <script> -->
+	</body>
 </html>
