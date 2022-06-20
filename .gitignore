@@ -12,3 +12,10 @@ react-prerequis-javascript/build
 react-prerequis-javascript/.idea/
 react-prerequis-javascript/.vscode/
 react-prerequis-javascript/.eslintcache
+react-fondamentaux/.DS_Store
+react-fondamentaux/node_modules
+react-fondamentaux/coverage
+react-fondamentaux/build
+react-fondamentaux/.idea
+react-fondamentaux/.eslintcache
+

@@ -1,0 +1,21 @@
+<!-- Manipuler le DOM avec React -->
+<!-- http://localhost:3000/alone/final/02.html -->
+
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const rootEl = document.getElementById('root')
+
+      const divEl = React.createElement('div', {
+        className: 'rootContainer',
+        children: 'Bienvenue sur mon site',
+      })
+      ReactDOM.render(divEl, rootEl)
+    </script>
+  </body>
+</html>

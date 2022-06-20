@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 1.5em;
+  margin: 5px;
+}
+.container--large {
+  height: 280px;
+}
+.container--medium {
+  height: 90px;
+}
+.container--small {
+  height: 30px;
+}
+/* Pour la partie bonus */
+.container--custom {
+  height: 45px;
+  font-size: 2.5em;
+  background-color: cyan;
+  font-style: italic;
+  text-align: left;
+}

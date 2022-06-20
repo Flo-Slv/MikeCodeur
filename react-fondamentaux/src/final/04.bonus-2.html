@@ -1,0 +1,50 @@
+<!-- Créer des Composants React -->
+<!-- 🚀 Utilisation des PropType -->
+<!-- http://localhost:3000/alone/final/02.bonus-1.html -->
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      // Ceci est un composant React
+      function Paragraphe({text, author}) {
+        return (
+          <p className="paragraphe">
+            {text} - Auteur : {author}
+          </p>
+        )
+      }
+
+      Paragraphe.propTypes = {
+        text: PropTypes.string.isRequired,
+        author: PropTypes.string.isRequired,
+      }
+
+      const divElement = (
+        <div className="rootContainer">
+          <h1>Bienvenue sur mon site</h1>
+          <Paragraphe
+            text="Lorem Ipsum is simply dummy text ..."
+            author="Lorem"
+          ></Paragraphe>
+          <Paragraphe
+            text="Lorem Ipsum has been the industry ..."
+            author="Ipsum"
+          ></Paragraphe>
+          <Paragraphe
+            text="when an unknown printer took a galley ..."
+            author="Lorem"
+          ></Paragraphe>
+          {/* <Paragraphe></Paragraphe> */}
+        </div>
+      )
+
+      ReactDOM.render(divElement, document.getElementById('root'))
+    </script>
+  </body>
+</html>

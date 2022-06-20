@@ -1,0 +1,21 @@
+<!-- Utilisation de JSX -->
+<!-- 🚀 Passer par une liste de variables (spread operateur) -->
+<!-- http://localhost:3000/alone/final/02.bonus-1.html -->
+
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const children = 'Bienvenue sur mon site'
+      const className = 'rootContainer'
+      const props = {children, className}
+      const divEl = <div {...props} />
+      ReactDOM.render(divEl, document.getElementById('root'))
+    </script>
+  </body>
+</html>

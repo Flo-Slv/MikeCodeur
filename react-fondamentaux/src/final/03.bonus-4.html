@@ -1,0 +1,35 @@
+<!-- Utilisation de JSX -->
+<!-- 🚀 Imbrication (avec avec fragment) -->
+<!-- http://localhost:3000/alone/final/02.bonus-1.html -->
+
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const className = 'rootContainer'
+      const h1Element = <h1>Bienvenue</h1>
+      const h2Element = <h2>Commencez ici</h2>
+      const pElement = (
+        <p>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry
+        </p>
+      )
+      const children = (
+        <>
+          {h1Element}
+          {h2Element}
+          {pElement}
+        </>
+      )
+      const props = {className, children}
+      const divEl = <div {...props} />
+      ReactDOM.render(divEl, document.getElementById('root'))
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!-- Créer des Composants React -->
+<!-- http://localhost:3000/alone/final/04.html -->
+
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      // ⚠️ Ceci n'est pas encore un composant React
+      function paragraphe({children}) {
+        return <p className="paragraphe">{children}</p>
+      }
+      
+      const divElement = (
+        <div className="rootContainer">
+          <h1>Bienvenue sur mon site</h1>
+          {paragraphe({children: 'Lorem Ipsum is simply dummy text ...'})}
+          {paragraphe({children: 'Lorem Ipsum has been the industry ...'})}
+          {paragraphe({children: 'when an unknown printer took a galley ..'})}
+        </div>
+      )
+
+      ReactDOM.render(divElement, document.getElementById('root'))
+    </script>
+  </body>
+</html>

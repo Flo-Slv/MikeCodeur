@@ -1,0 +1,31 @@
+<!-- Manipuler le DOM avec React -->
+<!-- http://localhost:3000/alone/exercise/02.html -->
+
+<html>
+  <head>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <!-- ⛏️ Ajoute Babel en supprimant les commentaires de la ligne ci-dessous -->
+    <!-- <script src="https://unpkg.com/@babel/standalone@7.15.1/babel.js"></script> -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- 🐶 Pour que Babel prenne en compte le code JavaScipt, il faut rajouter un attribut `type="text/babel"`
+    A la balise <script> -->
+    <script>
+      const rootEl = document.getElementById('root')
+
+      // 🐶 Il va falloir maintenant réimplémenter avec JSX
+      const divEl = document.createElement('div')
+      divEl.textContent = 'Bienvenue sur mon site'
+      divEl.className = 'rootContainer'
+
+      // 🐶 Crée une variable divEl qui contient du JSX (une div avec un texte et une class comme
+      // le resultat final html attendu)
+      // 🤖 Attention aux attributs en React qui diffèrent légèrement du HTML ex : class -> className
+      // 📑 https://fr.reactjs.org/docs/dom-elements.html
+
+      document.getElementById('root').append(divEl)
+    </script>
+  </body>
+</html>
