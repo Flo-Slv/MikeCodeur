@@ -4,7 +4,26 @@
 <!-- 🐶 Créé une structure minimale d'une page HTML :  <html> - <head> - <body> -->
 <!-- 🐶 Créé ensuite une <div> avec l'id "root" dans le body -->
 <!-- 🐶 Crée ensuite une balise <script> pour le code JS -->
+<html>
+	<head>
+		<script>
+			let rootDiv = document.createElement('div');
+			rootDiv.id = 'root';
+			document.body.appendChild(rootDiv);
 
+			let div = document.createElement('div');
+			div.innerHTML = 'Bienvenue sur mon site !';
+			div.className = 'rootContainer';
+
+			let root = document.getElementById('root');
+			root.append(div);
+		</script>
+	</head>
+
+	<body>
+	</body>
+
+</html>
 <!-- La suite du code est en JavaScript et à mettre dans la balise <script> -->
 <!-- 🐶 Créé une div -->
 <!--   🤖 document.createElement('div') -->
