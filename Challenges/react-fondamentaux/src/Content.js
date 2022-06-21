@@ -5,10 +5,10 @@ const Content = () => {
 	const [password, setPassword] = useState("");
 
 	let handleInput = event => {
-		if (event.target.name == "email")
+		if (event.target.name === "email")
 			return setEmail(event.target.value);
 
-		if (event.target.name == "password")
+		if (event.target.name === "password")
 			return setPassword(event.target.value);
 	};
 

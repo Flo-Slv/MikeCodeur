@@ -2,15 +2,15 @@ const Header = () => {
 	return (
 		<header className="App-header">
 			<nav className="navbar">
-				<a href="">
+				<a href="/">
 					Home
 				</a>
 
-				<a href="">
+				<a href="/login">
 					Login
 				</a>
 
-				<a href="">
+				<a href="/register">
 					Sign up
 				</a>
 			</nav>
