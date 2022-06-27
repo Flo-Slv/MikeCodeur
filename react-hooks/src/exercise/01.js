@@ -1,31 +1,43 @@
 // Hook useState
 // http://localhost:3000/alone/exercise/01.js
 
-import * as React from 'react'
+import * as React from 'react';
 
 // 🐶 Rend ce composant statefull en ajoutant un state email
 
-function Login() {
-  // ⛏️ supprime la variable email et replace par un hook useState.
-  const email = ''
+const fonctionLongue = () => window.localStorage.getItem('email');
 
-  const handleChange = event => {
-    // 🐶 Récupère la valeur du champ input avec event.target.value et met à jour l'email
-  }
+const Login = ({ initialEmail = '' }) => {
+	// ⛏️ supprime la variable email et replace par un hook useState.
+	// const email = '';
+	// const [email, setEmail] = React.useState(initialEmail);
+	const [email, setEmail] = React.useState(() => fonctionLongue() || initialEmail);
+	const [error, setError] = React.useState(Boolean(false));
 
-  return (
-    <div>
-      <div>
-        <label>Entrez votre email : </label>
-        <input value={email} onChange={handleChange} />
-      </div>
-      <div>Votre {email}</div>
-    </div>
-  )
-}
+	const handleChange = event => {
+		// 🐶 Récupère la valeur du champ input avec event.target.value et met à jour l'email
+		let value = event.target.value;
 
-function App() {
-  return <Login />
-}
+		setEmail(value);
+		value.includes('@') ? setError(Boolean(false)) : setError(Boolean(true));
 
-export default App
+		window.localStorage.setItem('email', value);
+	};
+
+	return <div>
+		<div>
+			<label>Entrez votre email : </label>
+			<input value={email} onChange={handleChange} />
+
+			<div style={{ color: error ? 'red' : '' }}>
+				Votre email est {error ? 'invalide' : 'valide'}
+			</div>
+		</div>
+	</div>
+};
+
+const App = () => {
+	return <Login initialEmail={'flo@dev.fr'} />;
+};
+
+export default App;
