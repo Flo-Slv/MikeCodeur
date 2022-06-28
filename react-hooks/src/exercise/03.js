@@ -32,12 +32,14 @@ const UserName = ({ userName, onUserNameChange }) => {
 };
 
 // 🐶 accepte `computer` en props
-const Content = ({ userName, computer }) => {
+// const Content = ({ userName, computer }) => {
+const Content = ({ computer }) => {
 	return <div>
 		{/* ⛏️ surprime ce libellé */}
 		{/*Salut <b>{userName}</b> ! 🐶 Utilise plutôt celui ci */}
 		{/* Salut <b>{userName}</b>, ton ordinateur préféré est <b>{computer}</b> */}
-		Salut <b>{userName}</b>, ton ordinateur pref est <b>{computer}</b>
+		{/*Salut <b>{userName}</b>, ton ordinateur pref est <b>{computer}</b> */}
+		Salut ton ordi pref est {computer}.
 	</div>;
 };
 
@@ -55,7 +57,8 @@ const App = () => {
 		<UserName userName={userName} onUserNameChange={setUserName} />
 
 		{/* 🐶 passe le prop computer ici */}
-		<Content userName={userName} computer={computer}/>
+		{/*<Content userName={userName} computer={computer}/> */}
+		<Content computer={computer} />
 	</div>;
 };
 
