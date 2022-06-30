@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/04-styles.css"],"names":[],"mappings":"AAAA,MACE,wBAA2B,CAC3B,UACF,CAEA,YACE,wBAA4B,CAC5B,UACF","file":"21.673c21c1.chunk.css","sourcesContent":["input {\n  background-color: lightgray;\n  color: black;\n}\n\ninput:focus {\n  background-color: lightgreen;\n  color: black;\n}\n"]}

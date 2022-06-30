@@ -1,1 +1,0 @@
-{"version":3,"sources":["index.js"],"names":[],"mappings":"o5DAAA,6B","file":"static/js/main.4aa48383.chunk.js","sourcesContent":["/*\n * Chargement du React Course App\n */\nimport codegen from 'codegen.macro'\n\ncodegen`module.exports = require('@mikecodeur/react-course-app/codegen')`\n"],"sourceRoot":""}
