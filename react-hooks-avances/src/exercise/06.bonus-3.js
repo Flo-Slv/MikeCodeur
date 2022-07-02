@@ -3,202 +3,201 @@
 // http://localhost:3000/alone/exercise/06.bonus-3.js
 
 /* eslint-disable no-unused-vars */
-import * as React from 'react'
-import {ErrorBoundary} from 'react-error-boundary'
+import * as React from 'react';
+import {ErrorBoundary} from 'react-error-boundary';
+
 import {
-  fetchMarvel,
-  fetchMarvelById,
-  fetchMarvelsList,
-  MarvelSearchForm,
-  ErrorDisplay,
-  MarvelPersoView,
-} from '../marvel'
-import '../02-styles.css'
+	fetchMarvel,
+	fetchMarvelById,
+	fetchMarvelsList,
+	MarvelSearchForm,
+	ErrorDisplay,
+	MarvelPersoView,
+} from '../marvel';
 
-// 🐶 Créé un context 'MarvelCacheContext' avec `React.createContext()`
+import '../02-styles.css';
 
-// 🐶 Créé un reducer 'marvelCacheReducer' pour gérer les données en cache
-// 🤖 utilise une fonction de ce style :
-//
-// function marvelCacheReducer(state, action) {
-//   switch (action.type) {
-//     case 'ADD_MARVEL': {
-//       return {...state, [action.marvelName]: action.marvelData}
-//     }
-//     case 'ADD_MARVEL_LIST': {
-//       return {...state, [`${action.marvelName}-list`]: action.marvelData}
-//     }
-//     default: {
-//       throw new Error(`action impossible: ${action.type}`)
-//     }
-//   }
-// }
+const MarvelCacheContext = React.createContext();
 
-// 🐶 Créé un Context Provider 'MarvelCacheProvider'
-function MarvelCacheProvider(props) {
-  // 🐶 Utlise le 'marvelCacheReducer' avec `React.useReducer`
-  // 🤖 const [cache, dispatch] = React.useReducer(marvelCacheReducer, {})
-  // 🐶 Retourne le provider avec les données du reducer
-  // 🤖 return <MarvelCacheContext.Provider value={[cache, dispatch]} {...props} />
-}
+const marvelCacheReducer = (state, action) => {
+	const ttl = 1_000 * 60 * 60;
+	const expiration = Date.now() + ttl;
 
-// 🐶 Crée un Context Consumer 'useMarvelCache'
-function useMarvelCache() {
-  // 🐶 Utlise le contexte 'MarvelCacheContext' avec `React.useContext(MarvelCacheContext)`
-  // 🤖 gère le cas ou 'useMarvelCache' n'est pas utilisé avec le provider
-  // if (!context) {
-  //   throw new Error('useMarvelCache doit être utilisé avec MarvelCacheProvider')
-  // }
-  // return context
-}
+	switch (action.type) {
+		case 'ADD_MARVEL':
+			return {
+				...state,
+				[action.marvelName]: { data: action.marvelData, expiration }
+			};
+		case 'ADD_MARVEL_LIST':
+			return {
+				...state,
+				[`${action.marvelName}-list`]: { data: action.marvelData, expiration }
+			};
+		default:
+			throw new Error(`Action impossible: ${action.type}`);
+	};
+};
+
+const MarvelCacheProvider = props => {
+	const [cache, dispatch] = React.useReducer(marvelCacheReducer, {});
+
+	return <MarvelCacheContext.Provider value={[cache, dispatch]} {...props} />;
+};
+
+const useMarvelCache = () => {
+	const context = React.useContext(MarvelCacheContext);
+
+	if (!context) throw new Error('bad implementation');
+
+	return context;
+};
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case 'fetching':
-      return {status: 'fetching', data: null, error: null}
-    case 'done':
-      return {status: 'done', data: action.payload, error: null}
-    case 'fail':
-      return {status: 'fail', data: null, error: action.error}
-    default:
-      throw new Error('Action non supporté')
-  }
-}
+	switch (action.type) {
+		case 'fetching':
+			return {status: 'fetching', data: null, error: null};
+		case 'done':
+			return {status: 'done', data: action.payload, error: null};
+		case 'fail':
+			return {status: 'fail', data: null, error: action.error};
+		default:
+			throw new Error('Action non supporté');
+	};
+};
 
-// 🐶 Evolution de 'useFetchData' pour pourvoir mettre à jour les données avec `setData`
-function useFetchData() {
-  const [state, dispatch] = React.useReducer(reducer, {
-    data: null,
-    error: null,
-    status: 'idle',
-  })
-  const {data, error, status} = state
+const useFetchData = () => {
+	const [state, dispatch] = React.useReducer(reducer, {
+		data: null,
+		error: null,
+		status: 'idle'
+	});
 
-  const execute = React.useCallback(promise => {
-    dispatch({type: 'fetching'})
-    promise
-      .then(marvel => dispatch({type: 'done', payload: marvel}))
-      .catch(error => dispatch({type: 'fail', error}))
-  }, [])
+	const {data, error, status} = state;
 
-  // 🐶 Dans le cas où l'on n'appelle pas d'API Rest (execute) on doit
-  // pourvoir mettre à jour des données.
-  // Pour cela on va retourner un callback 'setData' qui mettra à jour les data.
-  // 🤖
-  // const setData = React.useCallback(
-  //   data => dispatch({type: 'done', payload: data}),
-  //   [dispatch],
-  // )
+	const execute = React.useCallback(promise => {
+		dispatch({type: 'fetching'});
 
-  // 🐶 pense à retouner aussi setData pour pouvoir l'utiliser dans les hooks ci-dessous
-  return {data, error, status, execute}
-}
+		promise
+			.then(marvel => dispatch({type: 'done', payload: marvel}))
+			.catch(error => dispatch({type: 'fail', error}));
+	}, []);
 
-// 🐶 Fais évoluer ce hook pour gérer le cache
-function useFindMarvelList(marvelName) {
-  // 🐶 utilise le hook 'useMarvelCache'
-  // 🤖 const [cache, dispatch] = useMarvelCache()
+	const setData = React.useCallback(data => {
+		dispatch({ type: 'done', payload: data });
+	}, [dispatch]);
 
-  // 🐶 ajoute 'setData'
-  const {data, error, status, execute} = useFetchData()
+	return {data, error, status, execute, setData};
+};
 
-  React.useEffect(() => {
-    if (!marvelName) {
-      return
-    }
-    // 🐶 ajoute deux conditions :
-    // 1. S'il y a des données dans : `cache[marvelName]`
-    // met à jour les données directement avec `setData(cache[marvelName])`
-    // 2. sinon (`cache[marvelName]` est vide )
-    // Appel l'API Rest
-    // `execute(fetchMarvelsList(marvelName))`
-    execute(fetchMarvelsList(marvelName))
-    // 🐶 N'oublie pas les nouvelles dépendances de 'useEffect'
-  }, [marvelName, execute])
-  return {data, error, status}
-}
+const useFindMarvelList = marvelName => {
+	const [cache, dispatch] = useMarvelCache();
 
-// 🐶 Fais évoluer ce hook pour gérer le cache
-function useFindMarvelByName(marvelName) {
-  const {data, error, status, execute} = useFetchData()
-  React.useEffect(() => {
-    if (!marvelName) {
-      return
-    }
-    execute(fetchMarvel(marvelName))
-  }, [marvelName, execute])
-  return {data, error, status}
-}
+	const { data, error, status, execute, setData } = useFetchData();
 
-function Marvel({marvelName}) {
-  const state = useFindMarvelByName(marvelName, fetchMarvelById)
+	React.useEffect(() => {
+		if (!marvelName) return;
 
-  const {data: marvel, error, status} = state
-  if (status === 'fail') {
-    throw error
-  } else if (status === 'idle') {
-    return 'enter un nom de Marvel'
-  } else if (status === 'fetching') {
-    return 'chargement en cours ...'
-  } else if (status === 'done') {
-    return <MarvelPersoView marvel={marvel} />
-  }
-}
+		if (cache[`${marvelName}-list`]?.data && Date.now() < cache[`${marvelName}-list`].expiration)
+			setData(cache[`${marvelName}-list`].data);
+		else execute(fetchMarvelsList(marvelName).then(marvelData => {
+			dispatch({ type: 'ADD_MARVEL_LIST', marvelName, marvelData });
 
-function MarvelList({marvelName}) {
-  const state = useFindMarvelList(marvelName, fetchMarvelById)
-  const {data: marvels, error, status} = state
-  if (status === 'fail') {
-    throw error
-  } else if (status === 'idle') {
-    return 'enter un nom de Marvel'
-  } else if (status === 'fetching') {
-    return 'chargement en cours ...'
-  } else if (status === 'done') {
-    return (
-      <>
-        {marvels.map(marvel => {
-          return (
-            <div key={marvel.id}>
-              <hr style={{background: 'grey'}} />
-              <MarvelPersoView marvel={marvel} />
-            </div>
-          )
-        })}
-      </>
-    )
-  }
-}
+			return marvelData;
+		}));
 
-function App() {
-  const [marvelName, setMarvelName] = React.useState('')
-  const [searchList, setSearchList] = React.useState('')
-  const handleSearch = name => {
-    setMarvelName(name)
-  }
-  return (
-    <div className="marvel-app">
-      <label>
-        <input
-          type="checkbox"
-          checked={searchList}
-          onChange={e => setSearchList(e.target.checked)}
-        />{' '}
-        Chercher une liste ?
-      </label>
-      <MarvelSearchForm marvelName={marvelName} onSearch={handleSearch} />
-      {/* 🐶 Pense à wrapper avec <MarvelCacheProvider> */}
-      <div className="marvel-detail">
-        <ErrorBoundary key={marvelName} FallbackComponent={ErrorDisplay}>
-          {searchList ? (
-            <MarvelList marvelName={marvelName} />
-          ) : (
-            <Marvel marvelName={marvelName} />
-          )}
-        </ErrorBoundary>
-      </div>
-    </div>
-  )
-}
+	}, [marvelName, execute, setData, cache, dispatch]);
 
-export default App
+	return {data, error, status};
+};
+
+const useFindMarvelByName = marvelName => {
+	const [cache, dispatch] = useMarvelCache();
+
+	const { data, error, status, execute, setData } = useFetchData();
+
+	React.useEffect(() => {
+		if (!marvelName) return;
+		else if (cache[marvelName]?.data && Date.now() < cache[marvelName].expiration)
+			setData(cache[marvelName].data);
+		else execute(fetchMarvel(marvelName).then(marvelData => {
+			dispatch({ type: 'ADD_MARVEL', marvelName, marvelData });
+
+			return marvelData;
+		}));
+
+	}, [marvelName, execute, cache, setData, dispatch]);
+
+	return {data, error, status};
+};
+
+const Marvel = ({ marvelName }) => {
+	const state = useFindMarvelByName(marvelName, fetchMarvelById)
+
+	const {data: marvel, error, status} = state;
+
+	if (status === 'fail') throw error;
+
+	else if (status === 'idle')
+		return 'enter un nom de Marvel';
+	 else if (status === 'fetching')
+		return 'chargement en cours ...';
+	else if (status === 'done')
+		return <MarvelPersoView marvel={marvel} />;
+};
+
+const MarvelList = ({ marvelName }) => {
+	const state = useFindMarvelList(marvelName, fetchMarvelById);
+
+	const {data: marvels, error, status} = state;
+
+	if (status === 'fail') throw error;
+
+	else if (status === 'idle')
+		return 'enter un nom de Marvel';
+	else if (status === 'fetching')
+		return 'chargement en cours ...';
+	else if (status === 'done')
+		return <>
+			{marvels.map(marvel => {
+				return <div key={marvel.id}>
+					<hr style={{background: 'grey'}} />
+					<MarvelPersoView marvel={marvel} />
+				</div>;
+			})}
+		</>;
+};
+
+const App = () => {
+	const [marvelName, setMarvelName] = React.useState('');
+	const [searchList, setSearchList] = React.useState('');
+
+	const handleSearch = name => setMarvelName(name);
+
+	return <div className="marvel-app">
+		<label>
+			<input
+				type="checkbox"
+				checked={searchList}
+				onChange={e => setSearchList(e.target.checked)}
+			/>{' '}
+			Chercher une liste ?
+		</label>
+
+		<MarvelSearchForm marvelName={marvelName} onSearch={handleSearch} />
+
+		<MarvelCacheProvider>
+			<div className="marvel-detail">
+				<ErrorBoundary key={marvelName} FallbackComponent={ErrorDisplay}>
+					{searchList ? (
+						<MarvelList marvelName={marvelName} />
+					) : (
+						<Marvel marvelName={marvelName} />
+					)}
+				</ErrorBoundary>
+			</div>
+		</MarvelCacheProvider>
+	</div>;
+};
+
+export default App;
