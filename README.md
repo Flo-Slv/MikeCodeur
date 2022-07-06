@@ -1,7 +1,7 @@
 # ReactJS bootcamp by MikeCodeur
 My solutions and projects for MikeCodeur's bootcamp (ReactJS).
 
-*From 12/06/2022 to 18/09/2022.*
+*From 13/06/2022 to 18/09/2022.*
 <br /><br />
 
 I learned basics React's patterns:
