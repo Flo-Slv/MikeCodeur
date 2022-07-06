@@ -1,125 +1,120 @@
 // State reducer
 // http://localhost:3000/alone/exercise/02.js
 
-import * as React from 'react'
-import CheckBox from '../checkbox'
+import * as React from 'react';
 
-const executeAll =
-  (...functions) =>
-  (...args) =>
-    functions.forEach(func => func?.(...args))
+import CheckBox from '../checkbox';
 
-function defaultCheckboxReducer(state, action) {
-  switch (action.type) {
-    case 'tick': {
-      return {checked: !state.checked}
-    }
-    case 'reset': {
-      return action.initialState
-    }
-    default: {
-      throw new Error(`Action non supporté: ${action.type}`)
-    }
-  }
-}
+const executeAll = (...functions) =>
+	(...args) => functions.forEach(func => func?.(...args));
 
-// 🐶 ajoute un paramètre 'reducer' initialisé par defaut à 'defaultCheckboxReducer'
-// 🤖 {initialChecked = false, reducer = defaultCheckboxReducer} = {}
-function useCheckBox({initialChecked = false}) {
-  const initialState = {checked: initialChecked}
-  // 🐶 A la place d'utiliser 'defaultCheckboxReducer' utilise 'reducer' passé en paramètre.
-  const [state, dispatch] = React.useReducer(
-    defaultCheckboxReducer,
-    initialState,
-  )
-  const {checked} = state
+const actionTypes = {
+	tick: 'tick',
+	reset: 'reset'
+};
 
-  const tick = () => dispatch({type: 'tick'})
-  const reset = () => dispatch({type: 'reset', initialState})
+const defaultCheckboxReducer = (state, action) => {
+	switch (action.type) {
+		case actionTypes.tick: return { checked: !state.checked };
+		case actionTypes.reset: return action.initialState;
+		default: throw new Error(`Action non supporté: ${action.type}`);
+	};
+};
 
-  const getCheckboxerProps = ({onClick, ...props} = {}) => {
-    return {
-      'aria-checked': checked,
-      onChange: executeAll(onClick, tick),
-      ...props,
-    }
-  }
+const useCheckBox = ({ initialChecked = Boolean(false), reducer = defaultCheckboxReducer }) => {
+	const initialState = { checked: initialChecked };
 
-  const getResetterProps = ({onClick, ...props} = {}) => {
-    return {
-      onClick: executeAll(onClick, reset),
-      ...props,
-    }
-  }
+	const [state, dispatch] = React.useReducer(
+		reducer,
+		initialState
+	);
 
-  return {
-    checked,
-    reset,
-    tick,
-    getCheckboxerProps,
-    getResetterProps,
-  }
-}
+	const { checked } = state;
 
-function App() {
-  const [timesChanged, setTimesChanged] = React.useState(0)
-  const changedTooMuch = timesChanged >= 4
+	const tick = () => dispatch({ type: actionTypes.tick });
+	const reset = () => dispatch({ type: actionTypes.reset, initialState });
 
-  // 🐶 dans ce reducer personnalisé, implémente la logique propre à la checkbox de App
-  function customCheckboxStateReducer(state, action) {
-    switch (action.type) {
-      case 'tick': {
-        // 🤖 implémente l'arret du changement d'état avec :
-        //
-        // if (changedTooMuch) {
-        //   return {checked: state.checked}
-        // }
-        return {checked: !state.checked}
-      }
-      case 'reset': {
-        return {checked: false}
-      }
-      default: {
-        throw new Error(`Action non supporté: ${action.type}`)
-      }
-    }
-  }
+	const getCheckboxerProps = ({ onClick, ...props } = {}) => {
+		return {
+			'aria-checked': checked,
+			onChange: executeAll(onClick, tick),
+			...props
+		};
+	};
 
-  const {checked, getCheckboxerProps, getResetterProps} = useCheckBox({
-    // 🐶 passe le customReducer
-    // 🤖 reducer: customCheckboxStateReducer,
-  })
+	const getResetterProps = ({ onClick, ...props } = {}) => {
+		return {
+			onClick: executeAll(onClick, reset),
+			...props
+		};
+	};
 
-  return (
-    <div>
-      <CheckBox
-        {...getCheckboxerProps({
-          // 🤖 supprime disable
-          disabled: changedTooMuch,
-          checked: checked,
-          onClick: () => setTimesChanged(count => count + 1),
-        })}
-      />
-      {changedTooMuch ? (
-        <div data-testid="notice">
-          Tu as changer trop de fois !
-          <br />
-        </div>
-      ) : timesChanged > 0 ? (
-        <div data-testid="click-count">
-          Nombre de changement: {timesChanged}
-        </div>
-      ) : null}
-      <button {...getResetterProps({onClick: () => setTimesChanged(0)})}>
-        Reset
-      </button>
-    </div>
-  )
-}
+	return {
+		checked,
+		reset,
+		tick,
+		getCheckboxerProps,
+		getResetterProps
+	};
+};
 
-export default App
+const App = () => {
+	const [timesChanged, setTimesChanged] = React.useState(0);
+
+	const changedTooMuch = timesChanged >= 4;
+
+	// const customCheckboxStateReducer = (state, action) => {
+	// 	switch (action.type) {
+	// 		case 'tick': {
+	// 			if (changedTooMuch) return { checked: state.checked };
+	// 			return { checked: !state.checked };
+	// 		}
+	// 		case 'reset': return { checked: action.initialState };
+	// 		default: throw new Error(`Action non supporté: ${action.type}`);
+	// 	};
+	// };
+
+	// For only one use case.
+	const customCheckboxStateReducer = (state, action) => {
+		if (action.type === actionTypes.tick && changedTooMuch)
+			return { checked: state.checked };
+
+		return defaultCheckboxReducer(state, action);
+	};
+
+	const { checked, getCheckboxerProps, getResetterProps } = useCheckBox({
+		initialChecked: Boolean(false),
+		reducer: customCheckboxStateReducer
+	});
+
+	return <div>
+			<CheckBox
+				{...getCheckboxerProps({
+					checked: checked,
+					onClick: () => setTimesChanged(count => count + 1)
+				})}
+				/>
+
+			{changedTooMuch ? (
+				<div data-testid="notice">
+					Tu as changer trop de fois !
+					<br />
+				</div>
+			) : timesChanged > 0 ? (
+					<div data-testid="click-count">
+						Nombre de changement: {timesChanged}
+					</div>
+				) : null}
+
+			<button {...getResetterProps({ onClick: () => setTimesChanged(0) })}>
+				Reset
+			</button>
+	</div>;
+};
+
+export default App;
 
 /*
 eslint
-  no-unused-vars: "off",
+no-unused-vars: "off",
 */
