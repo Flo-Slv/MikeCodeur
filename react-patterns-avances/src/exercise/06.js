@@ -1,49 +1,67 @@
 // Context Module Functions
 // http://localhost:3000/alone/exercise/06.js
 
-import * as React from 'react'
-import CheckBox from '../checkbox'
+import * as React from 'react';
 
-// 🐶 Note : Le module commun  './06/context-counter' exporte 'context-counter-changed.js' et 'context-counter-general.js'
-import {CounterProvider, useCounter} from './06/context-counter'
+import CheckBox from '../checkbox';
 
-function Counter() {
-  const [state, dispatch] = useCounter()
-  // ⛏️ Déplace et adapte les fonctions 'increment' et 'decrement' dans '06/context-counter.js'
-  // Pense ensuite à les réimporter pour pourvoir les utiliser
-  const increment = () => dispatch({type: 'increment'})
-  const decrement = () => dispatch({type: 'decrement'})
-  return (
-    <div>
-      <div>Compteur : {state.count}</div>
-      {/* 🐶 utilise les fonction 'increment' et 'decrement' importé avec comme paramètre 'dipatch'  */}
-      <button onClick={decrement}>-</button>
-      <button onClick={increment}>+</button>
-    </div>
-  )
-}
+import {
+	CounterProvider,
+	CounterChangedProvider,
+	useCounter,
+	useCounterChanged,
+	increment,
+	decrement,
+	reset
+} from './06/context-counter';
 
-function TwoCheckbox() {
-  const [, dispatch] = useCounter()
-  // ⛏️ supprime 'increment' car on l'utilise la fonction importé
-  const increment = () => dispatch({type: 'increment'})
-  const decrement = () => dispatch({type: 'decrement'})
-  return (
-    <div>
-      {/* 🐶 utilise les fonction 'increment' importé avec comme paramètre 'dipatch'  */}
-      <CheckBox onChange={increment} />
-      <CheckBox onChange={decrement} />
-    </div>
-  )
-}
+const Counter = () => {
+	const [stateX, dispatch] = useCounter();
+	const [stateY, dispatchCounterChange] = useCounterChanged();
 
-function App() {
-  return (
-    <CounterProvider>
-      <Counter />
-      <TwoCheckbox />
-    </CounterProvider>
-  )
-}
+	const onReset = () => {
+		reset(dispatch);
+		reset(dispatchCounterChange);
+	};
 
-export default App
+	return <div>
+		<div>Compteur X : {stateX.count}</div>
+		<button onClick={() => decrement(dispatch)}>-</button>
+		<button onClick={() => increment(dispatch)}>+</button>
+
+		<br />
+		<br />
+
+		<div>Compteur Y : {stateY.count}</div>
+		<button onClick={() => decrement(dispatchCounterChange)}>-</button>
+		<button onClick={() => increment(dispatchCounterChange)}>+</button>
+
+		<br />
+		<br />
+
+		<div>Reset both</div>
+		<button onClick={onReset}>Reset</button>
+
+	</div>;
+};
+
+const TwoCheckbox = () => {
+	const [, dispatch] = useCounter();
+	const [, dispatchCounterChange] = useCounterChanged();
+
+	return <div>
+			<CheckBox onChange={() => increment(dispatch)} />
+			<CheckBox onChange={() => increment(dispatchCounterChange)} />
+	</div>;
+};
+
+const App = () => {
+	return <CounterProvider>
+		<CounterChangedProvider>
+			<Counter />
+			<TwoCheckbox />
+		</CounterChangedProvider>
+	</CounterProvider>;
+};
+
+export default App;
