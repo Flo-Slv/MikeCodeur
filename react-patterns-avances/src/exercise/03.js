@@ -1,32 +1,41 @@
 // Composants composés avec Context
 // http://localhost:3000/alone/exercise/02.js
 
-import * as React from 'react'
-import CheckBox from '../checkbox'
+import * as React from 'react';
 
-function useCheckBox() {
-  const [checked, setChecked] = React.useState(false)
-  const tick = () => setChecked(!checked)
+import CheckBox from '../checkbox';
 
-  // 🐶 Ajoute la propriété  'checkboxProps' en retour.
-  // avec le  role:'checkbox','aria-checked': checked, onClick,onChange
-  return {
-    checked,
-    tick,
-  }
-}
+const useCheckBox = () => {
+	const [checked, setChecked] = React.useState(Boolean(false));
 
-function App() {
-  const {checked, checkboxProps} = useCheckBox()
-  return (
-    <div>
-      <CheckBox checked={checked} {...checkboxProps} />
-      <br />
-      <button aria-label="checkbox-personnalise" {...checkboxProps}>
-        {checked ? '✔️' : '❌'}
-      </button>
-    </div>
-  )
-}
+	const tick = () => setChecked(!checked);
 
-export default App
+	// 🐶 Ajoute la propriété  'checkboxProps' en retour.
+	// avec le  role:'checkbox','aria-checked': checked, onClick,onChange
+	return {
+		checked,
+		tick,
+		checkboxProps: {
+			role: 'checkbox',
+			'aria-checked': checked,
+			onClick: tick,
+			onChange: tick
+		}
+	};
+};
+
+const App = () => {
+	const {checked, checkboxProps} = useCheckBox();
+
+	return (
+		<div>
+			<CheckBox checked={checked} {...checkboxProps} />
+			<br />
+			<button aria-label="checkbox-personnalise" {...checkboxProps}>
+				{checked ? '✔️' : '❌'}
+			</button>
+		</div>
+	)
+};
+
+export default App;
