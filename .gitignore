@@ -25,3 +25,5 @@ react-hooks-avances/build
 react-hooks-avances/node_modules
 react-patterns-avances/build
 react-patterns-avances/node_modules
+react-testing/build
+react-testing/node_modules
