@@ -1,30 +1,26 @@
 // Test en boite noir
 // http://localhost:3000/alone/exercise/03.js
 
-import * as React from 'react'
-import Hello from '../../components/helloreset'
+import * as React from 'react';
+import Hello from '../../components/helloreset';
 // eslint-disable-next-line no-unused-vars
-import {render, screen, fireEvent} from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 test('Affiche "Bonjour John" et "Merci" lors d\'un click" ', () => {
-  // ⛏️ supprime {container} car nous utiliserons `screen`
-  const {container} = render(<Hello name="John" />)
+	render(<Hello name="John" />);
 
-  // 🐶 utilise `getByRole` pour recupérer un 'button'
-  // 📑 https://testing-library.com/docs/queries/byrole/
-  // 🤖 screen.getByRole('button')
-  // Ici nous avons maintenant 2 buttons, pour pouvoir les distinguer il est possible
-  // ajouter un 2eme argument. nous allons utiliser 'name' pour savoir si
-  // l'on veut le bouton 'envoyer' ou 'reset'
-  // 🤖 screen.getByRole('button', {name: /envoyer/i})
-  const [envoyer, reset] = container.querySelectorAll('input')
+	const envoyer = screen.getByRole('button', { name: /envoyer/i });
+	const reset = screen.getByRole('button', { name: /reset/i });
 
-  // 🐶 utilise `getByRole` pour recupérer le libellé, le role utilisé est 'status'
-  const label = container.firstChild.querySelector('div')
+	const label = screen.getByRole('status');
 
-  expect(label).toHaveTextContent(`Bonjour John`)
-  fireEvent.click(envoyer)
-  expect(label).toHaveTextContent(`Merci`)
-  fireEvent.click(reset)
-  expect(label).toHaveTextContent(`Bonjour John`)
-})
+	expect(label).toHaveTextContent(`Bonjour John`);
+	// fireEvent.click(envoyer);
+	userEvent.click(envoyer);
+
+	expect(label).toHaveTextContent(`Merci`);
+	// fireEvent.click(reset);
+	userEvent.click(reset);
+	expect(label).toHaveTextContent(`Bonjour John`);
+});

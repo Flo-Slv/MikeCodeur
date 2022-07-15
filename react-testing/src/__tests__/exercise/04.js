@@ -2,25 +2,43 @@
 // http://localhost:3000/alone/exercise/04.js
 
 /* eslint-disable no-unused-vars */
-import * as React from 'react'
-import LoginForm from '../../components/loginForm'
-import {render, screen, fireEvent} from '@testing-library/react'
+import * as React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import LoginForm from '../../components/loginForm';
 
 test('formulaire de login avec username et password" ', () => {
-  // 🐶 créé 2 variables : 'submittedUsername' et 'submittedPassword' qui seront mises à jour par une fonction 'handleSubmit'
-  // 🐶 créé une fonction 'handleSubmit' avec un paramètre (object qui contient 'username' et 'password')
-  // met à jour 'submittedUsername' et 'submittedPassword
-  // 🐶 fait le rendu de LoginForm avec le prop onSubmit={handleSubmit}
-  // 🤖 render(<LoginForm
-  // 🐶 créé 2 variables pour les tests : 'username' et 'password' avec des valeurs de tests
-  // 🐶 récupère les elements DOM suivants : les champs input 'username' et 'login' (leurs roles est 'textbox' )
-  // en utilisant 'getByRole' et le 'name'
-  // 🤖 screen.getByRole('textbox',{ name: /Nom d'utilisateur :/i}
-  // 🐶 récupère l'element DOM suivant : le bouton (son role est 'button' )
-  // en utilisant 'getByRole' et le 'name'
-  // 🐶 modifie la valeur des 2 champs input avec `username` et `password` en utilisant
-  // 🤖 fireEvent.change(usernameElement, {target: { value: username }});
-  // 🐶 simule un click sur le button connexion
-  // 🐶 test que 'submittedUsername' soit egal à 'username'
-  // 🐶 test que 'submittedPassword' soit egal à 'password'
-})
+	let submittedUsername = '';
+	let submittedPassword = '';
+
+	// const handleSubmit = formData => {
+	// 	submittedUsername = formData.username;
+	// 	submittedPassword = formData.password;
+	// }
+
+	const handleMockFunction = jest.fn();
+	// render(<LoginForm onSubmit={handleSubmit} />);
+	render(<LoginForm onSubmit={handleMockFunction} />);
+
+	const username = 'Flo';
+	const password = '12345';
+
+	const inputUsername = screen.getByText(/Nom d'utilisateur :/i);
+	const inputPassword = screen.getByRole('textbox', { name: /Mot de passe :/i} );
+	const button = screen.getByRole('button', { name: /Connexion/i} );
+
+	userEvent.type(inputUsername, username);
+	userEvent.type(inputPassword, password);
+	userEvent.click(button);
+
+	expect(handleMockFunction).toHaveBeenCalled();
+	expect(handleMockFunction).toHaveBeenCalledTimes(1);
+	expect(handleMockFunction).toHaveBeenCalledWith({
+		username,
+		password
+	});
+
+	// expect(submittedUsername).toBe(username);
+	// expect(submittedPassword).toBe(password);
+});

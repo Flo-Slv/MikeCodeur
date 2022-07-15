@@ -17,7 +17,6 @@ test('Affiche "Bonjour John" et "Merci" lors d\'un click" ', () => {
 	const envoyer = container.querySelector('input');
 	const label = container.firstChild.querySelector('div');
 
-	// expect(label.textContent).toBe(`Bonjour John`);
 	expect(label).toHaveTextContent(`Bonjour John`);
 	fireEvent.click(envoyer);
 	expect(label.textContent).toBe(`Merci`);
