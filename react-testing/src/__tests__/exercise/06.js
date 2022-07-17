@@ -2,37 +2,70 @@
 // http://localhost:3000/alone/exercise/06.js
 
 /* eslint-disable no-unused-vars */
-import * as React from 'react'
-import LoginSubmitNotification from '../../components/loginSubmitNotification'
-import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import faker from 'faker'
-import mockHandlers from '../../test/mock-handlers'
-import {setupServer} from 'msw/node'
+import * as React from 'react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import faker from 'faker';
+import { setupServer } from 'msw/node';
 
-const server = setupServer(...mockHandlers)
+import LoginSubmitNotification from '../../components/loginSubmitNotification';
+import mockHandlers from '../../test/mock-handlers'
+
+const server = setupServer(...mockHandlers);
 
 beforeAll(() => {
-  server.listen()
-  // 🐶 met à jour la valeur de 'window.Notification' avec un objet 'requestPermission' qui vaut jest.fn()
-})
-afterAll(() => server.close())
-afterEach(() => server.resetHandlers())
+	server.listen();
+	window.Notification = {
+		requestPermission: jest.fn()
+	};
+});
 
-test('affiche un message de permission `granted` de notification" ', async () => {
-  // 🐶 créé un variable 'fakePermission' qui vaut 'granted'
-  // 🐶 appelle mockImplementation sur 'window.Notification.requestPermission' et passe en paramètre une fonction qui return fakePermission
-  // 🤖 () => {return fakePermission}
-  // 🐶 appelle render de <LoginSubmitNotification />
-  // 🐶 créé deux variables 'username' et 'password' avec des fakes donnée en utilisant faker
-  // 🐶 récupère 'usernameElement' 'passwordElement' 'submitbuttonElement' avec getByText getByRole comme précedement
-  // 🐶 ajoute 'username' 'usernameElement' / 'password' dans 'passwordElement'
-  // 🐶 simule un clik sur sur 'submitbuttonElement'
-  // 🐶 utlise waitForElementToBeRemoved pour attendre la fin d'affichage du texte 'chargement...'
-  // 🐶 verifie que le texte "Les notifications sont autorisés" se trouve dans le document
-})
+afterAll(() => server.close());
 
-test('affiche un message de permission `denied` de notification" ', async () => {
-  // 🐶 même test que précédement sauf que fakePermission = 'denied'
-  // 🐶 verifie que le texte "veuillez autoriser les notifications" se trouve dans le document
-})
+afterEach(() => server.resetHandlers());
+
+test('affiche un message de permission `granted` de notification', async () => {
+	const fakePermission = 'granted';
+
+	window.Notification.requestPermission.mockImplementation(() => fakePermission);
+
+	render(<LoginSubmitNotification />);
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
+
+	const usernameElement = screen.getByText(/Nom d'utilisateur :/i);
+	const passwordElement = screen.getByText(/Mot de passe :/i);
+	const submitbuttonElement = screen.getByRole('button', { name: /Connexion/i})
+
+	userEvent.type(usernameElement, username);
+	userEvent.type(passwordElement, password);
+	userEvent.click(submitbuttonElement);
+
+	await waitForElementToBeRemoved(() => screen.getByText(/chargement.../i));
+
+	expect(screen.getByText(/Les notifications sont autorisés/i)).toBeInTheDocument();
+});
+
+test('affiche un message de permission `denied` de notification', async () => {
+	const fakePermission = 'denied';
+
+	window.Notification.requestPermission.mockImplementation(() => fakePermission);
+
+	render(<LoginSubmitNotification />);
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
+
+	const usernameElement = screen.getByText(/Nom d'utilisateur :/i);
+	const passwordElement = screen.getByText(/Mot de passe :/i);
+	const submitbuttonElement = screen.getByRole('button', { name: /Connexion/i})
+
+	userEvent.type(usernameElement, username);
+	userEvent.type(passwordElement, password);
+	userEvent.click(submitbuttonElement);
+
+	await waitForElementToBeRemoved(() => screen.getByText(/chargement.../i));
+
+	expect(screen.getByText(/veuillez autoriser les notifications/i)).toBeInTheDocument();
+});
