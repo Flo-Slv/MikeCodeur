@@ -1,46 +1,112 @@
 // mocker les requêtes HTTP
 // http://localhost:3000/alone/exercise/05.js
 
-import * as React from 'react'
-import LoginSubmit from '../../components/loginSubmit'
-// 🐶 importe 'waitFor' de testing-library/react
-import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import faker from 'faker'
-// 🐶 importe 'rest' de 'msw'
-// 🐶 importe 'setupServer' de 'msw/node'
+import * as React from 'react';
 
-const sleep = t => new Promise(resolve => setTimeout(resolve, t))
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import faker from 'faker';
+import msw from 'msw';
+import { setupServer } from 'msw/node';
 
-// 🐶 Met en place un 'server' mock de test avec 'setupServer'
-// setupServer prend en parametre une requete à mocker
-// 📑 https://mswjs.io/docs/api/setup-server
-// Nous voulons intercepter les requetes sur "https://example.com/api/login"
-// Si 'username' ou 'password' non présent dans le body on retournera un message d'erreur
-// et un code errror 400
-// on simulera un delay de 100ms avec (🤖 ctx.delay(100) )
-// 🤖 return res(ctx.status(400), ctx.json({errorMessage: 'le password est obligatoire'}))
+import LoginSubmit from '../../components/loginSubmit';
+import mockHandlers from '../../test/mock-handlers.js';
 
-// 🐶 avant tous les tests appelle `server.listen()`
-// 🐶 après tous les tests appelle `server.close()`
+const sleep = t => new Promise(resolve => setTimeout(resolve, t));
 
-test('login api affiche le nom de l\'utilisateur connecté" ', async () => {
-  render(<LoginSubmit />)
+// const server = setupServer(
+// 	msw.rest.post('https://example.com/api/login', (req, res, ctx) => {
+// 		if (!req.body.username)
+// 			return res(
+// 				ctx.status(400),
+// 				ctx.json({ errorMessage: 'Username mandatory !' }),
+// 				ctx.delay(100)
+// 			);
+//
+// 		if (!req.body.password)
+// 			return res(
+// 				ctx.status(400),
+// 				ctx.json({ errorMessage: 'Password mandatory !' }),
+// 				ctx.delay(100)
+// 			);
+//
+// 		return res(
+// 			ctx.json({
+// 				username: req.body.username
+// 			}),
+// 			ctx.delay(100)
+// 		);
+// 	})
+// );
 
-  const username = faker.internet.userName()
-  const password = faker.internet.password()
+const server = setupServer(...mockHandlers);
 
-  const usernameElement = screen.getByText(/Nom d'utilisateur :/i)
-  const passwordElement = screen.getByText(/Mot de passe :/i)
-  const submitbuttonElement = screen.getByRole('button', {name: /Connexion/i})
+beforeAll(() => server.listen());
 
-  userEvent.type(usernameElement, username)
-  userEvent.type(passwordElement, password)
-  userEvent.click(submitbuttonElement)
+afterEach(() => server.resetHandlers());
 
-  // 🐶 simule une attente d'api superieur à 100ms gràce à 'waitFor'
-  // utilise sleep pour simuler une attente `sleep(150)`
+afterAll(() => server.close());
 
-  // await waitFor(() => sleep(150))
-  // expect(screen.getByText(username)).toBeInTheDocument()
-})
+test('login api affiche le nom de l\'utilisateur connecté ', async () => {
+	render(<LoginSubmit />);
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
+
+	const usernameElement = screen.getByText(/Nom d'utilisateur :/i);
+	const passwordElement = screen.getByText(/Mot de passe :/i);
+	const submitbuttonElement = screen.getByRole('button', { name: /Connexion/i });
+
+	userEvent.type(usernameElement, username);
+	userEvent.type(passwordElement, password);
+	userEvent.click(submitbuttonElement);
+
+	// await waitFor(() => sleep(150));
+	await waitForElementToBeRemoved(() => screen.getByText(/chargement.../i));
+	expect(screen.getByText(username)).toBeInTheDocument();
+});
+
+test('Test si le message d\'erreur est bon', async () => {
+	render(<LoginSubmit />);
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
+
+	const usernameElement = screen.getByText(/Nom d'utilisateur :/i);
+	const passwordElement = screen.getByText(/Mot de passe :/i);
+	const submitbuttonElement = screen.getByRole('button', { name: /Connexion/i });
+
+	userEvent.type(usernameElement, username);
+	userEvent.click(submitbuttonElement);
+
+	await waitForElementToBeRemoved(() => screen.getByText(/chargement.../i));
+	// expect(screen.getByRole('alert')).toHaveTextContent('le password est obligatoire');
+	expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(`"le password est obligatoire"`)
+});
+
+test('Test erreur 503', async () => {
+	server.use(
+		msw.rest.post('https://example.com/api/login', (req, res, ctx) => {
+			return res(
+				ctx.status(503),
+				ctx.json({ errorMessage: 'Unvailaible server !'} ),
+				ctx.delay(100)
+			);
+		})
+	);
+
+	render(<LoginSubmit />);
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
+
+	const usernameElement = screen.getByText(/Nom d'utilisateur :/i);
+	const passwordElement = screen.getByText(/Mot de passe :/i);
+	const submitbuttonElement = screen.getByRole('button', { name: /Connexion/i });
+
+	userEvent.type(usernameElement, username);
+	userEvent.click(submitbuttonElement);
+
+	await waitForElementToBeRemoved(() => screen.getByText(/chargement.../i));
+	expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(`"Unvailaible server !"`);
+});
