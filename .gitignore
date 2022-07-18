@@ -34,3 +34,8 @@ react-patterns-avances/node_modules
 
 react-testing/build
 react-testing/node_modules
+
+react-tracker-app/build
+react-tracker-app/coverage
+react-tracker-app/node_modules
+react-tracker-app/.vscode
